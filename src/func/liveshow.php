@@ -4,10 +4,13 @@ function get_streamlist() {
 	$streams = '';
 	$handle=opendir ('liveshows/'); 
 	while ($stream = readdir ($handle)) { /*Alle Daten im Ordner werden gelesen */
-		if (!is_dir($stream)) {
-			include('liveshows/'.$stream);
-			$streams .= '<option value="'.$stream.'">'.$stream_name.'</option>';		
-		}
+			
+		if(in_array($stream, array('.', '..')))
+			continue;
+			
+		include('liveshows/'.$stream);
+		$streams .= '<option value="'.$stream.'">'.$stream_name.'</option>';	
+			
 	}
 	closedir($handle); /* Ordnerauslesung wird geschlossen */
 	return $streams;
