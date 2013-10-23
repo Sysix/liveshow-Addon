@@ -1,0 +1,30 @@
+<form action="index.php?site=liveshow&amp;action=saveedit" method="post" id="post">
+<table width="100%" border="0" cellspacing="0" cellpadding="2" bgcolor="$border">
+  <tr>
+    <td class="title" align="center" bgcolor="$bghead">%edit_liveshow%</td>
+  </tr>
+</table>
+     <hr />
+    <table width="100%" border="0" cellspacing="1" cellpadding="2">
+      <tr align="left">
+        <td bgcolor="$bg1"><b>%title%:</b></td>
+		<td bgcolor="$bg1"><input name="title" type="text" value="$title" /></td>
+      </tr>
+	  <tr align="left">
+        <td bgcolor="$bg1"><b>Stream:</b></td>
+		<td bgcolor="$bg1"><select name="type">$streams</select></td>
+      </tr>
+	  <tr align="left">
+        <td bgcolor="$bg1"><b>ID/Name:</b></td>
+		<td bgcolor="$bg1"><input name="id" type="text" value="$id" /></td>
+      </tr>
+	  <tr align="left">
+        <td bgcolor="$bg1"><b>%active%?</b></td>
+		<td bgcolor="$bg1"><input type="checkbox" name="active" $checked /></td>
+      </tr>
+	  <tr align="left">
+        <td bgcolor="$bg1"><input type="hidden" name="userID" value="$u_id" /><input type="hidden" name="livID" value="$livID" /></td>
+		<td bgcolor="$bg1" align="right"><input type="submit" value="%save%" /></td>
+      </tr>
+    </table>
+</form>
