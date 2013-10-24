@@ -84,6 +84,15 @@ abstract class liveshow {
 	}
 	
 	/*
+	 * Rückgabe des Streamnamen
+	 *
+	 * @return string
+	 */
+	public function getName() {
+		return $this->name;	
+	}
+	
+	/*
 	 * Die gespeicherte Breite von der DB
 	 *
 	 * @return int
@@ -109,13 +118,26 @@ abstract class liveshow {
                         
                 if(in_array($stream, array('.', '..')))
                         continue;
+						
+				$class = explode('_live', $stream);
+				if($class[1] != '.php')
+					continue;
+					
+				include('liveshows/'.$stream);
+				$classname = 'liveshow_'.$class[0];
+				$obj = new $classname();
+					
+				$stream_name = $obj->getName();
+					
                         
-                include('liveshows/'.$stream);
-                $streams .= '<option value="'.$stream.'">'.$stream_name.'</option>';        
+                
+                $streams .= '<option value="'.$classname.'">'.$obj->getName().'</option>';        
                         
         }
-        closedir($handle);
-        return $streams;
+		
+		closedir($handle);
+		
+		return $streams;
 		
 	}
 	
@@ -148,20 +170,19 @@ abstract class liveshow {
 		$ds=mysql_fetch_array($suche);
         $active = $ds['active'];
 		
-        if($active) {
-                if($id != 0) {
-                        if($active == 1 AND !isanyadmin($userID)) { 
-							return 2; 
-						}
-                        else {
-							return 1; 
-						}
-                } else {
-					return 0;
-                }
-        }else {
+		if($active) {
+			if($id != 0) {
+				if($active == 1 AND !isanyadmin($userID)) { 
+					return 2; 
+				} else {
+					return 1; 
+				}
+			} else {
+				return 0;
+			}
+		} else {
 			return $id;
-        }
+		}
 	}
 	
 }
