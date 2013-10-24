@@ -2,15 +2,16 @@
 
 abstract class liveshow {
 	
-	public $orgWidth = 400;
-	public $ordHeight = 300;
+	public $orgWidth = 0;
+	public $ordHeight = 0;
 	public $apiUrl = '';
-	public $config = '';
+	public $config = array();
 	public $id = '';
 	public $name = '';
+	public $type = 'json';
 
-	public function __construct() {
-		
+	public function __construct($id) {
+		$this->id = $id;
 	}
 	
 	/*
@@ -42,9 +43,16 @@ abstract class liveshow {
 		curl_setopt($ch, CURLOPT_PORT, 80);
 		curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla (Statuscheck-Script)');
 		curl_setopt($ch, CURLOPT_TIMEOUT, 0);
+		curl_setopt($ch, CURLOPT_DNS_CACHE_TIMEOUT, 300);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		$curl = curl_exec($ch);
 		curl_close($ch);
+		
+		if($this->type == 'json') {
+			$this->config = json_decode($curl, false);
+		} else {
+			$this->config = simplexml_load_string($curl);
+		}
 		
 	}
 	
@@ -53,7 +61,8 @@ abstract class liveshow {
 	 *
 	 * @return string
 	 */
-	public function getEmbedCode() {		
+	public function getEmbedCode() {	
+		return;	
 	}
 	
 	/*
@@ -62,7 +71,7 @@ abstract class liveshow {
 	 * @return bool
 	 */
 	public function isLive() {
-		
+		return;
 	}
 	
 	/*
@@ -71,7 +80,7 @@ abstract class liveshow {
 	 * @return int
 	 */
 	public function getViews() {
-		
+		return;
 	}
 	
 	/*
