@@ -119,7 +119,7 @@ abstract class liveshow {
                 if(in_array($stream, array('.', '..')))
                         continue;						
 				
-				include('liveshows/'.$stream);
+				
 				$classname =  self::getClassName($stream);
 				
 				$obj = new $classname(0);                      
@@ -180,6 +180,7 @@ abstract class liveshow {
 	
 	static public function getClassName($file) {
 		
+		include('liveshows/'.$file);
 		$class = explode('_live', $stream);
 		if($class[1] != '.php')
 			continue;
