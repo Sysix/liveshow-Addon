@@ -117,21 +117,14 @@ abstract class liveshow {
         while ($stream = readdir ($handle)) {
                         
                 if(in_array($stream, array('.', '..')))
-                        continue;
-						
-				$class = explode('_live', $stream);
-				if($class[1] != '.php')
-					continue;
-					
+                        continue;						
+				
 				include('liveshows/'.$stream);
-				$classname = 'liveshow_'.$class[0];
-				$obj = new $classname();
-					
-				$stream_name = $obj->getName();
-					
-                        
+				$classname =  self::getClassName($stream);
+				
+				$obj = new $classname(0);                      
                 
-                $streams .= '<option value="'.$classname.'">'.$obj->getName().'</option>';        
+                $streams .= '<option value="'.$stream.'">'.$obj->getName().'</option>';        
                         
         }
 		
@@ -183,6 +176,16 @@ abstract class liveshow {
 		} else {
 			return $id;
 		}
+	}
+	
+	static public function getClassName($file) {
+		
+		$class = explode('_live', $stream);
+		if($class[1] != '.php')
+			continue;
+					
+		return 'liveshow_'.$class[0];
+		
 	}
 	
 }

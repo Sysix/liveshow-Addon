@@ -4,7 +4,7 @@ class liveshow_livestream extends liveshow {
 	
 	public $orgWidth = 560;
 	public $ordHeight = 340;
-	public $apiUrl = 'http://x%sx.api.channel.livestream.com/2.0/livestatus.xml';
+	public $apiUrl = 'http://x%sx.api.channel.livestream.com/2.0/livestatus.json';
 	public $name = 'livestream.com';
 	public $type = 'json';
 	
