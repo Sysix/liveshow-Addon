@@ -176,7 +176,8 @@ if($action == 'save') {
 		
 		$title = $ds['title'];
 		
-		$ob = new $ds['type']($ds['id']);
+		$classname = liveshowAction::getClassName($ds['type']);
+		$ob = new $classname($ds['id']);
 		$code = $ob->getEmbedCode();
 		
 		eval ("\$liveshow_show = \"".gettemplate("liveshow_show")."\";");
@@ -223,7 +224,8 @@ if($action == 'save') {
 		
 		$bg1 = ($n%2) ? BG_1 : BG_3;
 		
-		$ob = new $ds['type']($ds['id']);
+		$classname = liveshowAction::getClassName($ds['type']);
+		$ob = new $classname($ds['id']);
 		$ob->getApi();
 		$online = $ob->isLive();
 		$views = $ob->getViews();
