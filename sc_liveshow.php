@@ -1,6 +1,7 @@
 <?php
 
 include_once('src/classes/liveshow.php');
+include_once('src/classes/liveshowAction.php');
 
 $_language->read_module('liveshow');
 $ergebnis = safe_query("SELECT * FROM ".PREFIX."liveshow WHERE active='1' ORDER BY livID DESC LIMIT 0,5");

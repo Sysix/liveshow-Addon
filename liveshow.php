@@ -1,6 +1,8 @@
 <?php
 
 include_once('src/classes/liveshow.php');
+include_once('src/classes/liveshowAction.php');
+
 $_language->read_module('liveshow');
 
 $action = isset($_GET['action']) ? $_GET['action'] : '';
@@ -8,10 +10,10 @@ $action = isset($_GET['action']) ? $_GET['action'] : '';
 // Speichern eine neuen Streams
 if($action == 'save') {
 		
-	if(!liveshow::getStreamAccess()) die($_language->module['no_access']);
+	if(!liveshowAction::getStreamAccess()) die($_language->module['no_access']);
 	
 	$active = ($_POST['active'] == 'on') ? 1 : 0;
-	$active = liveshow::getStreamActive($active);
+	$active = liveshowAction::getStreamActive($active);
 	
 	if(!isanyadmin($userID)) { 
 		$active = 2; 
@@ -25,7 +27,7 @@ if($action == 'save') {
 // Speichern eine vorhandenen Streams	
 } elseif($action == 'saveedit') {
 	
-	if(!liveshow::getStreamAccess()) die($_language->module['no_access']);
+	if(!liveshowAction::getStreamAccess()) die($_language->module['no_access']);
 	
 	$active = ($_POST['active'] == 'on') ? 1 : 0;
 	$active = liveshow::getStreamActive($active);
@@ -42,7 +44,7 @@ if($action == 'save') {
 // Stream aktivieren/deaktivieren
 } elseif($action == 'saveactive') {
 	
-	if(!liveshow::getStreamAccess()) die($_language->module['no_access']);
+	if(!liveshowAction::getStreamAccess()) die($_language->module['no_access']);
 	$active_pst = $_POST['active'];
 	
 	if(isanyadmin($userID)) { 
@@ -73,7 +75,7 @@ if($action == 'save') {
 // Stream löschen
 } elseif($action == 'delete') {
 	
-	if(!liveshow::getStreamAccess()) die($_language->module['no_access']);
+	if(!liveshowAction::getStreamAccess()) die($_language->module['no_access']);
 	
 	$ds=mysql_fetch_array(safe_query("SELECT userID FROM ".PREFIX."liveshow WHERE livID='".(int)$_GET['livID']."'"));
 	if(isanyadmin($userID) || $userID == $ds['userID']) {
@@ -84,9 +86,9 @@ if($action == 'save') {
 // Erstellen eines neuen Streams
 } elseif($action == 'new') {
 	
-	if(!liveshow::getStreamAccess()) die($_language->module['no_access']);
+	if(!liveshowAction::getStreamAccess()) die($_language->module['no_access']);
 	
-	$streams = liveshow::getStreamList();
+	$streams = liveshowAction::getStreamList();
 	$active = '';
 	if(isanyadmin($userID)) {
 		$active = '<tr align="left">
@@ -100,7 +102,7 @@ if($action == 'save') {
 // Editieren eines vorhanden Streams
 } elseif($action == 'edit') {
 		
-	if(!liveshow::getStreamAccess()) die($_language->module['no_access']);
+	if(!liveshowAction::getStreamAccess()) die($_language->module['no_access']);
 	
 	$sql_abfrage = (isanyadmin($userID)) ? '' : "AND userID='".$userID."'";
 	
@@ -108,7 +110,7 @@ if($action == 'save') {
 	while($ds=mysql_fetch_array($ergebnis)) {
 		
 		$title = $ds['title'];
-		$streams = liveshow::getStreamList();
+		$streams = liveshowAction::getStreamList();
 		$streams = str_replace('value="'.$active_stream.'"', 'value="'.$active_stream.'" selected="selected"', $streams);
 		$active_stream = $ds['type'];		
 		$id = $ds['id'];
@@ -161,7 +163,7 @@ if($action == 'save') {
 	$ergebnis = safe_query("SELECT * FROM ".PREFIX."liveshow WHERE livID='".(int)$_GET['livID']."'");
 	while($ds=mysql_fetch_array($ergebnis)) {
 		
-		if(($userID == $ds['userID'] && liveshow::getStreamAccess() && $ds['active'] != 2) || isanyadmin($userID)) { 
+		if(($userID == $ds['userID'] && liveshowAction::getStreamAccess() && $ds['active'] != 2) || isanyadmin($userID)) { 
 			echo '
 			<input type="button" onclick="MM_goToURL(\'parent\',\'index.php?site=liveshow&amp;action=edit&amp;livID='.$_GET['livID'].'\');return document.MM_returnValue;" value="'.$_language->module['edit_liveshow'].'" /> 
 			<input type="button" onclick="MM_confirm(\''.$_language->module['really_delete'].'\', \'index.php?site=liveshow&amp;action=delete&amp;livID='.$_GET['livID'].'\');" value="'.$_language->module['delete'].'" />';  
@@ -174,8 +176,7 @@ if($action == 'save') {
 		
 		$title = $ds['title'];
 		
-		$classname = liveshow::getClassName($ds['type']);
-		$ob = new $classname($ds['id']);
+		$ob = new $ds['type']($ds['id']);
 		$code = $ob->getEmbedCode();
 		
 		eval ("\$liveshow_show = \"".gettemplate("liveshow_show")."\";");
@@ -195,7 +196,7 @@ if($action == 'save') {
 		echo '<input type="button" onclick="MM_goToURL(\'parent\',\'index.php?site=liveshow&amp;action=offline\');return document.MM_returnValue;" value="Offline Liveshow" /> ';
 	}
 	
-	if(liveshow::getStreamAccess()) {
+	if(liveshowAction::getStreamAccess()) {
 		echo '<input type="button" onclick="MM_goToURL(\'parent\',\'index.php?site=liveshow&amp;action=new\');return document.MM_returnValue;" value="'.$_language->module['new_liveshow'].'" />'; 
 	}
 	if(isanyadmin($userID)) {
@@ -206,7 +207,7 @@ if($action == 'save') {
 	
 	if(isanyadmin($userID)) { 
 		$sql_abfrage = '';
-	}elseif(liveshow::getStreamAccess()) {
+	}elseif(liveshowAction::getStreamAccess()) {
 		$sql_abfrage =  "WHERE active='1' OR userID='".$userID."'"; 
 	}  else {
 		$sql_abfrage = "WHERE active='1'";
@@ -222,8 +223,7 @@ if($action == 'save') {
 		
 		$bg1 = ($n%2) ? BG_1 : BG_3;
 		
-		$classname = liveshow::getClassName($ds['type']);
-		$ob = new $classname($ds['id']);
+		$ob = new $ds['type']($ds['id']);
 		$ob->getApi();
 		$online = $ob->isLive();
 		$views = $ob->getViews();
@@ -241,7 +241,7 @@ if($action == 'save') {
 		if($ds['active'] == 2) { $bg1 = '#FF9900'; }
 		if($ds['active'] == 1) { $checked = 'checked="checked"'; }
 		
-		if(($userID == $ds['userID'] && liveshow::getStreamAccess() && $ds['active'] != 2) || isanyadmin($userID)) {
+		if(($userID == $ds['userID'] && liveshowAction::getStreamAccess() && $ds['active'] != 2) || isanyadmin($userID)) {
 			$checkbox_show = '<input type="checkbox" name="active[]" value="'.$livID.'" '.$checked.' />';  
 		}
 		$title = '<a href="index.php?site=liveshow&amp;action=show&amp;livID='.$ds['livID'].'">'.$ds['title'].'</a>';
@@ -295,7 +295,7 @@ if($action == 'save') {
 	} else {
 		$info = '';	
 	}
-	if(liveshow::getStreamAccess()) { 
+	if(liveshowAction::getStreamAccess()) { 
 		$adminaction = '<tr>
 			<td bgcolor="'.BG_2.'" colspan="5" align="right">
 				'.$vis_inputs.'
