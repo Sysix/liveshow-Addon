@@ -2,7 +2,26 @@
 
 class liveshowAction {
 	
-	static public $streamActive;
+	static public $active;
+	static public $width;
+	static public $access;
+	
+	
+	/*
+	 * Alle Einträge von der DB in die Klassen-Var's speichern
+	 *
+	 */
+	static protected function setSettings() {
+		
+		$search = safe_query("SELECT * FROM `".PREFIX."liveshow_settings` WHERE lID=1");
+		$ds = mysql_fetch_array($search);
+		
+		self::$width = $ds['width'];
+		self::$active = $ds['active'];
+		self::$access = $ds['access'];
+		
+	}
+	
 	/*
 	 * Die gespeicherte Breite von der DB
 	 *
@@ -10,9 +29,11 @@ class liveshowAction {
 	 */
 	static public function getStreamWidh() {
 		
-		$search = safe_query("SELECT width FROM `".PREFIX."liveshow_settings` WHERE lID=1");
-		$ds = mysql_fetch_array($search);
-		return $ds['width'];
+		if(is_null(self::$width)) {
+			self::setSettings();	
+		}
+		
+		return self::$width;
 		
 	}
 	
@@ -45,15 +66,20 @@ class liveshowAction {
 		
 	}
 	
-	
+	/*
+	 * Zugriffsberechtigung überprüfen
+	 *
+	 * @return bool
+	 */
 	static public function getStreamAccess() {
 		global $loggedin;
 		global $userID;
 		
-		$search = safe_query("SELECT access FROM `".PREFIX."liveshow_settings` WHERE lID='1'");
-		$ds = mysql_fetch_array($search);
+		if(is_null(self::$access)) {
+			self::setSettings();	
+		}
 		
-		switch($ds['access']) {
+		switch(self::$access) {
 			case 1:
 				return $loggedin;
 			case 2:
@@ -67,18 +93,20 @@ class liveshowAction {
 		
 	}
 	
+	/*
+	 * Alle Streams als Option rausbekommen
+	 *
+	 * @param	string	$id
+	 * @return	int
+	 */
 	static public function getStreamActive($id) {
 		global $userID;
 		
-		if(is_null(self::$streamActive)) {
-			
-			$suche = safe_query("SELECT active FROM `".PREFIX."liveshow_settings` WHERE lID='1'");
-			$ds=mysql_fetch_array($suche);
-			self::$streamActive = $ds['active'];
-			
+		if(is_null(self::$active)) {
+			self::setSettings();			
 		}
 		
-		if(self::$streamActive) {
+		if(self::$active) {
 			if($id != 0) {
 				if($active == 1 && !isanyadmin($userID)) { 
 					return 2; 
@@ -93,6 +121,13 @@ class liveshowAction {
 		}
 	}
 	
+	/*
+	 * OOP-Klassennamen bekommen
+	 *
+	 * @param	string	$file	Der Dateiname
+	 * @return	string
+	 *
+	 */
 	static public function getClassName($file) {
 		
 		$class = explode('_live', $stream);
