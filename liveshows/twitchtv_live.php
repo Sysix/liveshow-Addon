@@ -3,7 +3,7 @@
 class liveshow_twitchtv extends liveshow {
 	
 	public $orgWidth = 620;
-	public $ordHeight = 378;
+	public $orgHeight = 378;
 	public $apiUrl = 'https://api.twitch.tv/kraken/streams/%s';
 	public $name = 'Twitch.tv';
 	public $type = 'json';

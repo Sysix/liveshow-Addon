@@ -3,7 +3,7 @@
 class liveshow_justintv extends liveshow {
 	
 	public $orgWidth = 400;
-	public $ordHeight = 300;
+	public $orgHeight = 300;
 	public $apiUrl = 'http://api.justin.tv/api/stream/list.xml?channel=%s';
 	public $name = 'Justin.tv';
 	public $type = 'xml';

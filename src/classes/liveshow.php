@@ -3,7 +3,7 @@
 abstract class liveshow {
 	
 	public $orgWidth = 0;
-	public $ordHeight = 0;
+	public $orgHeight = 0;
 	public $apiUrl = '';
 	public $config = array();
 	public $id = '';
@@ -22,12 +22,12 @@ abstract class liveshow {
 	public function getPlayerSize() {
 	
 		$width = liveshowAction::getStreamWidh();
-        $height = ($width*100)/$orginal_width;
-        $height = ($height*$orginal_height)/100;
+        $height = ($width*100)/$this->orgWidth;
+        $height = ($height*$this->orgHeight)/100;
 		
 		if(!$height || !$width) { 
-			$width = $orginal_width; 
-			$height = $orginal_height; 
+			$width = $this->orgWidth; 
+			$height = $this->orgHeight; 
 		}
 		
 		return array('width'=>$width, 'height'=>$height);
