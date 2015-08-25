@@ -108,7 +108,7 @@ class liveshowAction {
 		
 		if(self::$active) {
 			if($id != 0) {
-				if($active == 1 && !isanyadmin($userID)) { 
+				if(self::$active == 1 && !isanyadmin($userID)) {
 					return 2; 
 				} else {
 					return 1; 
@@ -128,11 +128,15 @@ class liveshowAction {
 	 * @return	string
 	 *
 	 */
-	static public function getClassName($file) {
+	static public function getClassName($file, $load = true) {
 		
-		$class = explode('_live', $stream);
+		$class = explode('_live', $file);
 		if($class[1] != '.php')
-			continue;
+			return '';
+
+		if($load) {
+			require_once 'liveshows/' . $file;
+		}
 					
 		return 'liveshow_'.$class[0];
 		
