@@ -38,7 +38,7 @@ class hitbox_livestream extends liveshow
     public function getPreviewImage()
     {
         if($this->isLive()) {
-            return 'http://edge.sf.hitbox.tv/' . $this->config['livestream'][0]['media_thumbnail_large'];
+            return 'http://edge.sf.hitbox.tv' . $this->config['livestream'][0]['media_thumbnail_large'];
         }
 
         return '';
