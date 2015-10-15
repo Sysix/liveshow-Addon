@@ -1,6 +1,6 @@
 <?php
 
-class hitbox_livestream extends liveshow
+class liveshow_hitbox extends liveshow
 {
 
     public $orgWidth = 640;
