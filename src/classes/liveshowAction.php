@@ -51,7 +51,7 @@ class liveshowAction {
                 if(in_array($stream, array('.', '..')))
                         continue;						
 				
-				include('liveshows/'.$stream);
+				include_once('liveshows/'.$stream);
 				$classname =  self::getClassName($stream);
 				
 				$obj = new $classname(0);                      
@@ -134,7 +134,7 @@ class liveshowAction {
 		if($class[1] != '.php')
 			return '';
 
-		if($load) {
+		if($load && !class_exists('liveshow_' . $class[0], false)) {
 			require_once 'liveshows/' . $file;
 		}
 					
